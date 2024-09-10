@@ -1,12 +1,53 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Stratton\\Github Projects\\PGA-Backend\\Gateway.API\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{20052ECB-A940-4638-9DEB-BE4FB8EDA6B9}|..\\Multiplayer.API\\Multiplayer.API.csproj|c:\\stratton\\github projects\\pga-backend\\multiplayer.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{60679078-73D8-4559-99D3-0C56999FE9CD}|Gateway.API.csproj|c:\\stratton\\github projects\\pga-backend\\gateway.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{60679078-73D8-4559-99D3-0C56999FE9CD}|Gateway.API.csproj|solutionrelative:dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Stratton\\Github Projects\\PGA-Backend\\Multiplayer.API\\Dockerfile",
+              "RelativeDocumentMoniker": "..\\Multiplayer.API\\Dockerfile",
+              "ToolTip": "C:\\Stratton\\Github Projects\\PGA-Backend\\Multiplayer.API\\Dockerfile",
+              "RelativeToolTip": "..\\Multiplayer.API\\Dockerfile",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-09-10T01:55:47.178Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Stratton\\Github Projects\\PGA-Backend\\Gateway.API\\Dockerfile",
+              "RelativeDocumentMoniker": "Dockerfile",
+              "ToolTip": "C:\\Stratton\\Github Projects\\PGA-Backend\\Gateway.API\\Dockerfile",
+              "RelativeToolTip": "Dockerfile",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-09-10T01:52:44.704Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
