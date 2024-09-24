@@ -3,11 +3,41 @@
   "WorkspaceRootPath": "C:\\Stratton\\Github Projects\\PGA-Backend\\Gateway.API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{20052ECB-A940-4638-9DEB-BE4FB8EDA6B9}|..\\Multiplayer.API\\Multiplayer.API.csproj|c:\\stratton\\github projects\\pga-backend\\multiplayer.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{20052ECB-A940-4638-9DEB-BE4FB8EDA6B9}|..\\Multiplayer.API\\Multiplayer.API.csproj|c:\\stratton\\github projects\\pga-backend\\multiplayer.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5202E531-5230-42E3-8C10-E901DA01C2E9}|..\\Item.API\\Item.API.csproj|c:\\stratton\\github projects\\pga-backend\\item.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{60679078-73D8-4559-99D3-0C56999FE9CD}|Gateway.API.csproj|c:\\stratton\\github projects\\pga-backend\\gateway.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{60679078-73D8-4559-99D3-0C56999FE9CD}|Gateway.API.csproj|solutionrelative:dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A48968D0-6D39-4542-AC65-CED12ECB787E}|..\\Account.API\\Account.API.csproj|c:\\stratton\\github projects\\pga-backend\\account.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FAC1EFA1-EA5E-45B7-84B1-792F35D17864}|..\\Social.API\\Social.API.csproj|c:\\stratton\\github projects\\pga-backend\\social.api\\models\\message.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FAC1EFA1-EA5E-45B7-84B1-792F35D17864}|..\\Social.API\\Social.API.csproj|c:\\stratton\\github projects\\pga-backend\\social.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{20052ECB-A940-4638-9DEB-BE4FB8EDA6B9}|..\\Multiplayer.API\\Multiplayer.API.csproj|c:\\stratton\\github projects\\pga-backend\\multiplayer.api\\services\\longdriveservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A48968D0-6D39-4542-AC65-CED12ECB787E}|..\\Account.API\\Account.API.csproj|c:\\stratton\\github projects\\pga-backend\\account.api\\services\\accountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{20052ECB-A940-4638-9DEB-BE4FB8EDA6B9}|..\\Multiplayer.API\\Multiplayer.API.csproj|c:\\stratton\\github projects\\pga-backend\\multiplayer.api\\controllers\\longdrivecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A48968D0-6D39-4542-AC65-CED12ECB787E}|..\\Account.API\\Account.API.csproj|c:\\stratton\\github projects\\pga-backend\\account.api\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A48968D0-6D39-4542-AC65-CED12ECB787E}|..\\Account.API\\Account.API.csproj|c:\\stratton\\github projects\\pga-backend\\account.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{20052ECB-A940-4638-9DEB-BE4FB8EDA6B9}|..\\Multiplayer.API\\Multiplayer.API.csproj|c:\\stratton\\github projects\\pga-backend\\multiplayer.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,6 +52,128 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Stratton\\Github Projects\\PGA-Backend\\Multiplayer.API\\appsettings.json",
+              "RelativeDocumentMoniker": "..\\Multiplayer.API\\appsettings.json",
+              "ToolTip": "C:\\Stratton\\Github Projects\\PGA-Backend\\Multiplayer.API\\appsettings.json",
+              "RelativeToolTip": "..\\Multiplayer.API\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAVAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-09-24T03:32:49.619Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Stratton\\Github Projects\\PGA-Backend\\Item.API\\appsettings.json",
+              "RelativeDocumentMoniker": "..\\Item.API\\appsettings.json",
+              "ToolTip": "C:\\Stratton\\Github Projects\\PGA-Backend\\Item.API\\appsettings.json",
+              "RelativeToolTip": "..\\Item.API\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-09-20T06:45:57.499Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Message.cs",
+              "DocumentMoniker": "C:\\Stratton\\Github Projects\\PGA-Backend\\Social.API\\Models\\Message.cs",
+              "RelativeDocumentMoniker": "..\\Social.API\\Models\\Message.cs",
+              "ToolTip": "C:\\Stratton\\Github Projects\\PGA-Backend\\Social.API\\Models\\Message.cs",
+              "RelativeToolTip": "..\\Social.API\\Models\\Message.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAABCAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-20T05:17:37.531Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Stratton\\Github Projects\\PGA-Backend\\Social.API\\Dockerfile",
+              "RelativeDocumentMoniker": "..\\Social.API\\Dockerfile",
+              "ToolTip": "C:\\Stratton\\Github Projects\\PGA-Backend\\Social.API\\Dockerfile",
+              "RelativeToolTip": "..\\Social.API\\Dockerfile",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-09-19T05:51:52.821Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AccountService.cs",
+              "DocumentMoniker": "C:\\Stratton\\Github Projects\\PGA-Backend\\Account.API\\Services\\AccountService.cs",
+              "RelativeDocumentMoniker": "..\\Account.API\\Services\\AccountService.cs",
+              "ToolTip": "C:\\Stratton\\Github Projects\\PGA-Backend\\Account.API\\Services\\AccountService.cs",
+              "RelativeToolTip": "..\\Account.API\\Services\\AccountService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-16T03:09:23.655Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Stratton\\Github Projects\\PGA-Backend\\Account.API\\appsettings.json",
+              "RelativeDocumentMoniker": "..\\Account.API\\appsettings.json",
+              "ToolTip": "C:\\Stratton\\Github Projects\\PGA-Backend\\Account.API\\appsettings.json",
+              "RelativeToolTip": "..\\Account.API\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-09-16T03:07:54.459Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "C:\\Stratton\\Github Projects\\PGA-Backend\\Account.API\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "..\\Account.API\\Controllers\\AccountController.cs",
+              "ToolTip": "C:\\Stratton\\Github Projects\\PGA-Backend\\Account.API\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "..\\Account.API\\Controllers\\AccountController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-16T02:54:07.157Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Stratton\\Github Projects\\PGA-Backend\\Account.API\\Dockerfile",
+              "RelativeDocumentMoniker": "..\\Account.API\\Dockerfile",
+              "ToolTip": "C:\\Stratton\\Github Projects\\PGA-Backend\\Account.API\\Dockerfile",
+              "RelativeToolTip": "..\\Account.API\\Dockerfile",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAeAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-09-13T02:37:27.717Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "LongdriveController.cs",
+              "DocumentMoniker": "C:\\Stratton\\Github Projects\\PGA-Backend\\Multiplayer.API\\Controllers\\LongdriveController.cs",
+              "RelativeDocumentMoniker": "..\\Multiplayer.API\\Controllers\\LongdriveController.cs",
+              "ToolTip": "C:\\Stratton\\Github Projects\\PGA-Backend\\Multiplayer.API\\Controllers\\LongdriveController.cs",
+              "RelativeToolTip": "..\\Multiplayer.API\\Controllers\\LongdriveController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAAdAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-12T03:04:50.327Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "LongdriveService.cs",
+              "DocumentMoniker": "C:\\Stratton\\Github Projects\\PGA-Backend\\Multiplayer.API\\Services\\LongdriveService.cs",
+              "RelativeDocumentMoniker": "..\\Multiplayer.API\\Services\\LongdriveService.cs",
+              "ToolTip": "C:\\Stratton\\Github Projects\\PGA-Backend\\Multiplayer.API\\Services\\LongdriveService.cs",
+              "RelativeToolTip": "..\\Multiplayer.API\\Services\\LongdriveService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAmAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-10T02:05:37.387Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
               "Title": "Dockerfile",
               "DocumentMoniker": "C:\\Stratton\\Github Projects\\PGA-Backend\\Multiplayer.API\\Dockerfile",
               "RelativeDocumentMoniker": "..\\Multiplayer.API\\Dockerfile",
@@ -29,12 +181,11 @@
               "RelativeToolTip": "..\\Multiplayer.API\\Dockerfile",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAiAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-09-10T01:55:47.178Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-10T01:55:47.178Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Dockerfile",
               "DocumentMoniker": "C:\\Stratton\\Github Projects\\PGA-Backend\\Gateway.API\\Dockerfile",
               "RelativeDocumentMoniker": "Dockerfile",
@@ -42,8 +193,7 @@
               "RelativeToolTip": "Dockerfile",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-09-10T01:52:44.704Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-10T01:52:44.704Z"
             }
           ]
         }
