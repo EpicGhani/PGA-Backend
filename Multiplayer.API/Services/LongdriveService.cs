@@ -25,7 +25,7 @@ namespace Multiplayer.API.Services
             await _database.Find(i => i.id == id).FirstOrDefaultAsync();
 
         // Get random long drive data
-        public async Task<LongDriveModel> GetRandomAsync()
+        public async Task<LongDriveModel?> GetRandomAsync()
         {
             var count = await _database.CountDocumentsAsync(new BsonDocument());
             if (count is 0)
