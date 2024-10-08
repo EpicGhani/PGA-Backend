@@ -9,8 +9,7 @@ namespace Multiplayer.API.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? id { get; set; }
-        public int RngSeed { get; set; }
-        public string[] TakeThatsToApplyToOpponent { get; set; } = null!;
-        public RecordedStrike RecordedStrike { get; set; } = null!;
+        public string userId { get; set; } = null!;
+        public playerTurnsData[] playerTurnsData { get; set; } = null!;
     }
 }
