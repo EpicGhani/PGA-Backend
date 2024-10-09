@@ -2,8 +2,8 @@
 {
     public class SwingData
     {
-        public int MinimumDriveDistance { get; set; }
-        public int MaximumDriveDistance { get; set; }
+        public float MinimumDriveDistance { get; set; }
+        public float MaximumDriveDistance { get; set; }
         public float Control { get; set; }
         public float AccuracyVariance { get; set; }
     }
