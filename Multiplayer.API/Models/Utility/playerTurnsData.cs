@@ -1,6 +1,6 @@
 ﻿namespace Multiplayer.API.Models.Utility
 {
-    public class playerTurnsData
+    public class PlayerTurnsData
     {
         public int RngSeed { get; set; }
         public string[] TakeThatsToApplyToOpponent { get; set; } = null!;
