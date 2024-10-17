@@ -25,18 +25,24 @@ namespace NFT.API.Services
         {
             // Generate head data and then save to the item bank
             return null;
+
+
         }
 
         public async Task<ShaftData> GenerateShaftData()
         {
             // Generate shaft data and then save to the item bank
             return null;
+
+
         }
 
         public async Task<GripData> GenerateGripData()
         {
             // Generate grip data and then save to the item bank
             return null;
+
+
         }
         #endregion
         #endregion
