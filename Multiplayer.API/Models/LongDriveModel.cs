@@ -10,6 +10,7 @@ namespace Multiplayer.API.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string? id { get; set; }
         public string UserId { get; set; } = null!;
+        public int MapId { get; set; }
         public PlayerTurnsData[] PlayerTurnsData { get; set; } = null!;
     }
 }
