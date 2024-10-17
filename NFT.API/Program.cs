@@ -1,3 +1,4 @@
+using NFT.API.Models;
 using NFT.API.Models.Clubs;
 using NFT.API.Services;
 
@@ -5,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.Configure<ClubDatabaseSettings>(
+builder.Services.Configure<NFTDatabaseSettings>(
     builder.Configuration.GetSection("DatabaseSettings"));
 
 builder.Services.AddSingleton<NFTService>();

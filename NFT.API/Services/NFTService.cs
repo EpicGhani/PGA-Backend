@@ -1,51 +1,37 @@
 ﻿using NFT.API.Models.Clubs;
 using NFT.API.Models.Clubs.Interface;
 using NFT.API.Models.Clubs.Utils;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
+using NFT.API.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace NFT.API.Services
 {
     public class NFTService
     {
+        private readonly IMongoCollection<HeadData> _heads;
+        private readonly IMongoCollection<ShaftData> _shafts;
+        private readonly IMongoCollection<GripData> _grips;
+
         private Rarity rarity;
 
-        #region Craft Club
-        public async Task<ClubDataModel> CraftClub(int rarityIndex)
+        public NFTService(IOptions<NFTDatabaseSettings> options)
         {
-            rarity = (Rarity)rarityIndex;
-
-            var headData = new HeadData(rarity);
-            var shaftData = new ShaftData(rarity);
-            var gripData = new GripData();
-            var clubData = new ClubDataModel(headData, shaftData, gripData);
-
-            return clubData;
-        }
-        #region Generate Club Parts
-        public async Task<HeadData> GenerateHeadData()
-        {
-            // Generate head data and then save to the item bank
-            return null;
-
-
+            var mongoClient = new MongoClient(options.Value.ConnectionName);
+            var itemBank = mongoClient.GetDatabase(options.Value.ItemBankDatabase);
+            _heads = itemBank.GetCollection<HeadData>(options.Value.ClubHeadCollection);
+            _shafts = itemBank.GetCollection<ShaftData>(options.Value.ClubShaftCollection);
+            _grips = itemBank.GetCollection<GripData>(options.Value.ClubGripCollection);
         }
 
-        public async Task<ShaftData> GenerateShaftData()
-        {
-            // Generate shaft data and then save to the item bank
-            return null;
-
-
-        }
-
-        public async Task<GripData> GenerateGripData()
-        {
-            // Generate grip data and then save to the item bank
-            return null;
-
-
-        }
+        #region Part Getter
+        public async Task<HeadData> GetHeadDataByIdAsync(string id) => 
+            await _heads.Find(i => i.id == id).FirstOrDefaultAsync();
+        public async Task<ShaftData> GetShaftDataByIdAsync(string id) =>
+            await _shafts.Find(i => i.id == id).FirstOrDefaultAsync();
+        public async Task<GripData> GetGripDataByIdAsync(string id) =>
+            await _grips.Find(i => i.id == id).FirstOrDefaultAsync();
         #endregion
-        #endregion
-
     }
 }
