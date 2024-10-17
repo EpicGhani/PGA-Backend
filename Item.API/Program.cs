@@ -1,6 +1,19 @@
+using Item.API.Models;
+using Item.API.Services;
+using Swashbuckle.AspNetCore.Swagger;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.Configure<ItemDatabaseSettings>(
+    builder.Configuration.GetSection("DatabaseSettings"));
+
+builder.Services.AddSingleton<ItemService>();
+
+builder.Services.AddControllers();
+
+builder.Services.AddSwaggerGen();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
@@ -21,5 +34,14 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+app.MapControllers();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Items API");
+    c.RoutePrefix = string.Empty;
+});
 
 app.Run();
