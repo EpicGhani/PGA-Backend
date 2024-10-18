@@ -1,10 +1,8 @@
-﻿using NFT.API.Models.Clubs;
-using NFT.API.Models.Clubs.Interface;
+﻿using NFT.API.Models.Clubs.Interface;
 using NFT.API.Models.Clubs.Utils;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using NFT.API.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace NFT.API.Services
 {
