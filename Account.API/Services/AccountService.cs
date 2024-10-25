@@ -15,6 +15,7 @@ namespace Account.API.Services
             _profiles = mongoDatabase.GetCollection<ProfileModel>(profileDatabaseSettings.Value.ProfileCollectionName);
         }
 
+        #region Get Profile Services
         public async Task<ProfileModel?> GetProfileAsync(string userId)
         {
             var filter = Builders<ProfileModel>.Filter.Eq(i => i.Profile.UserId, userId);
@@ -24,12 +25,14 @@ namespace Account.API.Services
 
         public async Task<ProfileModel?> GetProfileByIDAsync(string id) =>
             await _profiles.Find(i => i.id == id).FirstOrDefaultAsync();
+        #endregion
 
-
+        #region Update & Create Profile Services
         public async Task UpdateProfileAsync(string id, ProfileModel updatedProfileModel) =>
             await _profiles.ReplaceOneAsync(i => i.id == id, updatedProfileModel);
 
         public async Task CreateProfileAsync(ProfileModel newProfileModel) =>
             await _profiles.InsertOneAsync(newProfileModel);
+        #endregion 
     }
 }

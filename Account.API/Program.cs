@@ -9,6 +9,7 @@ builder.Services.Configure<ProfileDatabaseSettings>(
     builder.Configuration.GetSection("DatabaseSettings"));
 
 builder.Services.AddSingleton<AccountService>();
+builder.Services.AddHttpClient<HttpService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
