@@ -22,7 +22,7 @@ namespace Account.API.Controllers
         }
 
         #region Token Validation
-        public static bool ValidateToken(string token, TokenValidationParameters validationParams)
+        public static int ValidateToken(string token, TokenValidationParameters validationParams)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken validatedToken = null!;
@@ -31,17 +31,21 @@ namespace Account.API.Controllers
             {
                 tokenHandler.ValidateToken(token, validationParams, out validatedToken);
                 Console.WriteLine(validatedToken);
-                return validatedToken != null;
+                return validatedToken != null ? 0 : 1;
             }
-            catch (Exception)
+            catch (SecurityTokenExpiredException)
             {
-                Console.WriteLine(validatedToken);
-                return false;
+                return 2;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Token Validation Failed: {ex.Message} | \nWith Security Token: {validatedToken}.");
+                return 3;
             }
         }
 
-        [HttpGet("Authenticate")]
-        public async Task AuthenticateToken()
+        [HttpPost("Authenticate")]
+        public async Task<IActionResult> AuthenticateToken([FromBody]string token)
         {
             // SETUP UNITY TOKEN VERIFICATION VIA THEIR PROVIDED ENDPOINT
             string JWKSEndPoint = "https://player-auth.services.api.unity.com/.well-known/jwks.json";
@@ -50,23 +54,38 @@ namespace Account.API.Controllers
             response.EnsureSuccessStatusCode();
 
             var keys = await response.Content.ReadAsStringAsync();
-
-            var token = "eyJhdWQiOlsiaWRkOjY2NzFhNmNkLTdjNDEtNGY4MS1hNmQ2LWU2MGY0ZjhhY2M1OCIsImVudk5hbWU6cHJvZHVjdGlvbiIsImVudklkOmQwNmQ2MTM0LWNlYjQtNGM0OC1hNjZhLWQwNWI5OGYyMDFmMSIsInVwaWQ6ZGE4OGJlNmUtYTQyZC00OGIxLTg5MWEtZDkyMjkzNjU5MDdhIl0sImV4cCI6MTcyOTgyMDYxOCwiaWF0IjoxNzI5ODE3MDE4LCJpZGQiOiI2NjcxYTZjZC03YzQxLTRmODEtYTZkNi1lNjBmNGY4YWNjNTgiLCJpc3MiOiJodHRwczovL3BsYXllci1hdXRoLnNlcnZpY2VzLmFwaS51bml0eS5jb20iLCJqdGkiOiIyZWQ3MzY1Ni03ZjFlLTRjZWItOGUwOC00N2UxMDk2MzFlY2YiLCJuYmYiOjE3Mjk4MTcwMTgsInByb2plY3RfaWQiOiJkYTg4YmU2ZS1hNDJkLTQ4YjEtODkxYS1kOTIyOTM2NTkwN2EiLCJzaWduX2luX3Byb3ZpZGVyIjoiYW5vbnltb3VzIiwic3ViIjoibVBVbnFuSU8wZExJSkl1eDFYOFRjMDFWYllGOCIsInRva2VuX3R5cGUiOiJhdXRoZW50aWNhdGlvbiIsInZlcnNpb24iOiIxIn0";
             var jwks = new JsonWebKeySet(keys);
-            var jwk = jwks.Keys.Last();
 
             var validationParams = new TokenValidationParameters
             {
-                IssuerSigningKey = jwk,
-                ValidAudience = "",
-                ValidIssuer = ""
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKeys = jwks.Keys,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidIssuer = "https://player-auth.services.api.unity.com",
+                ValidAudiences = new List<string>
+                {
+                    "idd:6671a6cd-7c41-4f81-a6d6-e60f4f8acc58",
+                    "envName:production",
+                    "envId:d06d6134-ceb4-4c48-a66a-d05b98f201f1",
+                    "upid:da88be6e-a42d-48b1-891a-d9229365907a"
+                }
             };
 
             var isValid = ValidateToken(token, validationParams);
 
-            Console.WriteLine(isValid);
-
-
+            switch(isValid)
+            {
+                case 0:
+                    default:
+                    return Ok(new {message = "Token is Valid."});
+                case 1:
+                    return BadRequest();
+                case 2:
+                    return Ok(new {message = "Token is expired."});
+                case 3:
+                    return Ok(new {message = "An error occured with the provided token."});
+            }
         }
         #endregion
 
