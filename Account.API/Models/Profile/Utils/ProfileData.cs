@@ -11,5 +11,8 @@
         public string Club { get; set; } = null!;
         public int Currency { get; set; }
         public int PremiumCurrency { get; set; }
+        public string? GooglePlayId { get; set; } = null!;
+        public string? AppleGameCenterId { get; set; } = null!;
+        public string? FacebookId { get; set; } = null!;
     }
 }
