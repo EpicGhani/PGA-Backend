@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Threading.Tasks;
 using Account.API.Models.Profile.Utils;
+using MongoDB.Driver;
 
 namespace Account.API.Controllers
 {
@@ -70,15 +71,37 @@ namespace Account.API.Controllers
             if (profile is null)
                 return NotFound("Profile not found.");
 
-            if (!string.IsNullOrEmpty(profile.Profile.Username))
-                return BadRequest("Username has already been set and cannot be changed.");
-
             if (await _accountService.IsUsernameInUse(request.Username))
                 return Conflict("Username is already in use.");
 
-            await _accountService.SetUsernameAsync(request.UserId, request.Username);
-            return Ok("Username set successfully.");
+            // Call SetUsernameAsync and capture the response
+            var response = await _accountService.SetUsernameAsync(request.UserId, request.Username);
+
+            // Return the SetUsernameResponse object as JSON
+            return Ok(response);
         }
+
+
+        [HttpPost("SetProfilePicture")]
+        public async Task<IActionResult> SetProfilePicture([FromBody] SetProfilePictureRequest request)
+        {
+            if (string.IsNullOrEmpty(request.UserId))
+                return BadRequest("User ID is required.");
+
+            var success = await _accountService.UpdateProfilePictureAsync(request.UserId, request.ProfilePictureId);
+            return success ? Ok("Profile picture updated successfully.") : BadRequest("Failed to update profile picture.");
+        }
+
+        [HttpPost("SetBannerPicture")]
+        public async Task<IActionResult> SetBannerPicture([FromBody] SetBannerPictureRequest request)
+        {
+            if (string.IsNullOrEmpty(request.UserId))
+                return BadRequest("User ID is required.");
+
+            var success = await _accountService.UpdateBannerPictureAsync(request.UserId, request.BannerPictureId);
+            return success ? Ok("Banner picture updated successfully.") : BadRequest("Failed to update banner picture.");
+        }
+
         #endregion
 
         #region Currency Management
@@ -108,6 +131,7 @@ namespace Account.API.Controllers
             var success = await _accountService.ConsumeCurrencyAsync(request.UserId, request.Amount, request.IsPremium);
             return success ? Ok("Currency consumed successfully.") : BadRequest("Insufficient currency or failed to consume currency.");
         }
+
         #endregion
     }
 }

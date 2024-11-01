@@ -102,11 +102,12 @@ namespace Account.API.Services
                         Username = uniqueUsername,
                         Password = string.Empty,
                         Email = string.Empty,
-                        ProfilePicture = string.Empty,
-                        BannerPicture = string.Empty,
+                        ProfilePictureId = string.Empty,
+                        BannerPictureId = string.Empty,
                         Club = string.Empty,
                         Currency = 400,
                         PremiumCurrency = 30,
+                        RemainingUsernameChanges = 1,
                         GooglePlayId = string.Empty,
                         AppleGameCenterId = string.Empty,
                         FacebookId = string.Empty
@@ -128,12 +129,10 @@ namespace Account.API.Services
         public async Task UpdateProfileAsync(string id, ProfileModel updatedProfileModel) =>
             await _profiles.ReplaceOneAsync(i => i.id == id, updatedProfileModel);
 
-        public async Task UpdateProfileFieldAsync(string? id, UpdateDefinition<ProfileModel> updateDefinition)
+        public async Task<UpdateResult> UpdateProfileFieldAsync(string? id, UpdateDefinition<ProfileModel> updateDefinition)
         {
-            await _profiles.UpdateOneAsync(
-                Builders<ProfileModel>.Filter.Eq(p => p.id, id),
-                updateDefinition
-            );
+            var filter = Builders<ProfileModel>.Filter.Eq(p => p.id, id);
+            return await _profiles.UpdateOneAsync(filter, updateDefinition);
         }
 
         #endregion
@@ -164,33 +163,70 @@ namespace Account.API.Services
             if (string.IsNullOrEmpty(username))
                 return false;
 
-            var filter = Builders<ProfileModel>.Filter.Eq(p => p.Profile.Username, username);
+            // Use a case-insensitive regex filter
+            var filter = Builders<ProfileModel>.Filter.Regex(p => p.Profile.Username, new MongoDB.Bson.BsonRegularExpression($"^{username}$", "i"));
             var existingProfile = await _profiles.Find(filter).FirstOrDefaultAsync();
             return existingProfile != null;
         }
 
+
         /// <summary>
         /// Sets a unique username for the profile if it hasn't been set already.
         /// </summary>
-        public async Task<bool> SetUsernameAsync(string userId, string username)
+        public async Task<SetUsernameResponse> SetUsernameAsync(string userId, string username)
         {
             var filter = Builders<ProfileModel>.Filter.Eq(p => p.Profile.UserId, userId);
             var profile = await _profiles.Find(filter).FirstOrDefaultAsync();
 
             if (profile == null)
-                return false;
+                throw new Exception("Profile not found.");
 
-            if (!string.IsNullOrEmpty(profile.Profile.Username))
-                throw new InvalidOperationException("Username has already been set and cannot be changed.");
+            if (profile.Profile.RemainingUsernameChanges <= 0)
+                throw new InvalidOperationException("No remaining username changes allowed.");
 
             if (await IsUsernameInUse(username))
                 throw new InvalidOperationException("Username is already in use.");
 
-            var update = Builders<ProfileModel>.Update.Set(p => p.Profile.Username, username);
+            // Update username and decrement RemainingUsernameChanges
+            var update = Builders<ProfileModel>.Update
+                .Set(p => p.Profile.Username, username)
+                .Inc(p => p.Profile.RemainingUsernameChanges, -1);
+
+            var result = await _profiles.UpdateOneAsync(filter, update);
+
+            // If the update is successful, return the response model
+            if (result.ModifiedCount > 0)
+            {
+                return new SetUsernameResponse
+                {
+                    Success = true,
+                    RemainingUsernameChanges = profile.Profile.RemainingUsernameChanges - 1
+                };
+            }
+
+            // If the update fails, return a failure response
+            return new SetUsernameResponse
+            {
+                Success = false,
+                RemainingUsernameChanges = profile.Profile.RemainingUsernameChanges
+            };
+        }
+
+        public async Task<bool> UpdateProfilePictureAsync(string userId, int profilePictureId)
+        {
+            var filter = Builders<ProfileModel>.Filter.Eq(p => p.Profile.UserId, userId);
+            var update = Builders<ProfileModel>.Update.Set("Profile.ProfilePictureId", profilePictureId);
             var result = await _profiles.UpdateOneAsync(filter, update);
             return result.ModifiedCount > 0;
         }
 
+        public async Task<bool> UpdateBannerPictureAsync(string userId, int bannerPictureId)
+        {
+            var filter = Builders<ProfileModel>.Filter.Eq(p => p.Profile.UserId, userId);
+            var update = Builders<ProfileModel>.Update.Set("Profile.BannerPictureId", bannerPictureId);
+            var result = await _profiles.UpdateOneAsync(filter, update);
+            return result.ModifiedCount > 0;
+        }
         #endregion
 
         #region Currency Management
