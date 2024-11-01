@@ -27,7 +27,7 @@ namespace Account.API.Controllers
         public static int ValidateToken(string token, TokenValidationParameters validationParams)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken validatedToken;
+            SecurityToken validatedToken = null!;
 
             try
             {
@@ -41,7 +41,7 @@ namespace Account.API.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Token Validation Failed: {ex.Message} | \nWith Security Token:");
+                Console.WriteLine($"Token Validation Failed: {ex.Message} | \nWith Security Token: {validatedToken}.");
                 return 3;
             }
         }
