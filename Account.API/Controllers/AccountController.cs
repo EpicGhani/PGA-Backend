@@ -11,7 +11,7 @@ using MongoDB.Driver;
 namespace Account.API.Controllers
 {
     [ApiController]
-    [Route("/api/v1/Account")]
+    [Route("/api/v1/[Controller]/")]
     public class AccountController : Controller
     {
         private readonly AccountService _accountService;
@@ -41,7 +41,7 @@ namespace Account.API.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Token Validation Failed: {ex.Message} | \nWith Security Token: {validatedToken}.");
+                Console.WriteLine($"Token Validation Failed: {ex.Message} | \nWith Security Token:");
                 return 3;
             }
         }
