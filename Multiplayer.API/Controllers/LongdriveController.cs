@@ -39,6 +39,17 @@ namespace Multiplayer.API.Controllers
             return result;
         }
 
+        // GET: Get random long drive data filtered by map name
+        [HttpGet("single/{mapId:int}")]
+        public async Task<ActionResult<LongDriveModel>> GetRandomLongdriveByMap(int mapId)
+        {
+            var result = await _longdriveService.GetRandomByMapAsync(mapId);
+            if (result is null)
+                return NotFound();
+
+            return result;
+        }
+
         // POST: Create new long drive data
         [HttpPost]
         public async Task<ActionResult> Post(LongDriveModel newLongdrive)

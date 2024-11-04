@@ -37,6 +37,20 @@ namespace Multiplayer.API.Services
             return await _database.Find(new BsonDocument()).Skip(skip).Limit(1).FirstOrDefaultAsync();
         }
 
+        // Get random long drive data filtered by map ID
+        public async Task<LongDriveModel?> GetRandomByMapAsync(int mapId)
+        {
+            var filter = Builders<LongDriveModel>.Filter.Eq(i => i.MapId, mapId);
+            var count = await _database.CountDocumentsAsync(filter);
+            if (count == 0)
+                return null;
+
+            var random = new Random();
+            var skip = random.Next(0, (int)count);
+
+            return await _database.Find(filter).Skip(skip).Limit(1).FirstOrDefaultAsync();
+        }
+
         // Post new long drive data
         public async Task CreateAsync(LongDriveModel newLongdrive) =>
             await _database.InsertOneAsync(newLongdrive);
