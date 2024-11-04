@@ -2,7 +2,6 @@
 using MongoDB.Driver;
 using Account.API.Models.Profile;
 using Account.API.Models.Profile.Utils;
-using MongoDB.Bson.IO;
 using System.Text.Json;
 
 namespace Account.API.Services

@@ -1,5 +1,4 @@
-﻿
-namespace Account.API.Models.Profile.Utils
+﻿namespace Account.API.Models.Profile.Utils
 {
     public class ConsumeCurrencyRequest
     {

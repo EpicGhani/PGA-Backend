@@ -1,12 +1,9 @@
-﻿using Account.API.Models;
-using Account.API.Models.Profile;
+﻿using Account.API.Models.Profile;
 using Account.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
-using System.Threading.Tasks;
 using Account.API.Models.Profile.Utils;
-using MongoDB.Driver;
 
 namespace Account.API.Controllers
 {
