@@ -16,10 +16,6 @@ namespace Item.API.Services
             var mongoDatabase = mongoClient.GetDatabase(settings.Value.DatabaseName);
 
             // COLLECTION REFERENCE
-            _scalingBank = mongoDatabase.GetCollection<Scaling>(settings.Value.ScalingCollectionName);
         }
-
-        public async Task<List<Scaling>> GetScalingsAsync() =>
-            await _scalingBank.Find(i => true).ToListAsync();
     }
 }

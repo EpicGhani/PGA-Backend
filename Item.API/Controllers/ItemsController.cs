@@ -19,8 +19,16 @@ namespace Item.API.Controllers
 
         public ItemsController(ItemService service) => _itemService = service;
 
-        [HttpGet]
-        public async Task<List<Scaling>> GetScaling() =>
-            await _itemService.GetScalingsAsync();
+        //[HttpGet]
+        //public async Task<List<Scaling>> GetScaling() =>
+        //    await _itemService.GetScalingsAsync();
+        //[HttpGet("{tag}")]
+        //public async Task<ActionResult<Scaling>> GetScalingByTagAsync(string tag)
+        //{
+        //    var scaling = await _itemService.GetScalingByTagAsync(tag);
+        //    if (scaling is null)
+        //        return NotFound();
+        //    return scaling;
+        //}
     }
 }
