@@ -96,13 +96,13 @@ namespace Account.API.Controllers
         /// <summary>
         /// Get or create a profile based on user ID.
         /// </summary>
-        [HttpPost("GetMyProfile")]
-        public async Task<ActionResult<ProfileModel>> GetMyProfileAsync([FromBody] GetProfileRequest request)
+        [HttpGet("GetOrCreateMyProfile/{userId}")]
+        public async Task<ActionResult<ProfileModel>> GetOrCreateMyProfileAsync(string userId)
         {
-            if (string.IsNullOrEmpty(request.UserId))
+            if (string.IsNullOrEmpty(userId))
                 return BadRequest("User ID is required.");
 
-            var profile = await _accountService.GetOrCreateProfileAsync(request.UserId);
+            var profile = await _accountService.GetOrCreateProfileAsync(userId);
 
             if (profile == null)
                 return NotFound("Failed to retrieve or create profile.");
@@ -110,15 +110,14 @@ namespace Account.API.Controllers
             return Ok(profile);
         }
 
-
         /// <summary>
         /// Set a username for a profile, if not already set.
         /// </summary>
-        [HttpPost("SetUsername")]
+        [HttpPatch("SetUsername")]
         public async Task<IActionResult> SetUsername([FromBody] SetUsernameRequest request)
         {
             var profile = await _accountService.GetProfileAsync(request.UserId);
-            if (profile is null)
+            if (profile == null)
                 return NotFound("Profile not found.");
 
             if (await _accountService.IsUsernameInUse(request.Username))
@@ -132,7 +131,10 @@ namespace Account.API.Controllers
         }
 
 
-        [HttpPost("SetProfilePicture")]
+        /// <summary>
+        /// Update the profile picture for a user.
+        /// </summary>
+        [HttpPatch("SetProfilePicture")]
         public async Task<IActionResult> SetProfilePicture([FromBody] SetProfilePictureRequest request)
         {
             if (string.IsNullOrEmpty(request.UserId))
@@ -142,7 +144,10 @@ namespace Account.API.Controllers
             return success ? Ok("Profile picture updated successfully.") : BadRequest("Failed to update profile picture.");
         }
 
-        [HttpPost("SetBannerPicture")]
+        /// <summary>
+        /// Update the banner picture for a user.
+        /// </summary>
+        [HttpPatch("SetBannerPicture")]
         public async Task<IActionResult> SetBannerPicture([FromBody] SetBannerPictureRequest request)
         {
             if (string.IsNullOrEmpty(request.UserId))
@@ -159,7 +164,7 @@ namespace Account.API.Controllers
         /// <summary>
         /// Add currency (regular or premium) to the user's profile.
         /// </summary>
-        [HttpPost("AddCurrency")]
+        [HttpPatch("AddCurrency")]
         public async Task<IActionResult> AddCurrency([FromBody] AddCurrencyRequest request)
         {
             if (string.IsNullOrEmpty(request.UserId))
@@ -172,7 +177,7 @@ namespace Account.API.Controllers
         /// <summary>
         /// Consume currency (regular or premium) from the user's profile.
         /// </summary>
-        [HttpPost("ConsumeCurrency")]
+        [HttpPatch("ConsumeCurrency")]
         public async Task<IActionResult> ConsumeCurrency([FromBody] ConsumeCurrencyRequest request)
         {
             if (string.IsNullOrEmpty(request.UserId))
