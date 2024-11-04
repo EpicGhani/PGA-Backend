@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using Account.API.Models.Profile.Utils;
+using System.Text.Json;
+using System.Diagnostics;
 
 namespace Account.API.Controllers
 {
@@ -13,11 +15,43 @@ namespace Account.API.Controllers
     {
         private readonly AccountService _accountService;
         private readonly HttpService _http;
+        private readonly string[] _prefixes;
+        private readonly string[] _adjectives;
+        private readonly Random _random;
+        private readonly DefaultProfileValues _defaultProfileValues;
 
         public AccountController(AccountService accountService, HttpService httpService)
         {
             _accountService = accountService;
             _http = httpService;
+            (_prefixes, _adjectives) = LoadUsernameData();
+            _random = new Random();
+            _defaultProfileValues = LoadDefaultProfileValues();
+        }
+
+        private (string[], string[]) LoadUsernameData()
+        {
+            string filePath = Path.Combine(AppContext.BaseDirectory, "username_prefixes.json");
+
+            if (!System.IO.File.Exists(filePath))
+                throw new FileNotFoundException("username_prefixes.json file not found.");
+
+            var jsonData = System.IO.File.ReadAllText(filePath);
+            var data = JsonSerializer.Deserialize<PrefixesAndAdjectivesData>(jsonData)
+                ?? throw new InvalidOperationException("Failed to deserialize username data.");
+
+            return (data.Prefixes, data.Adjectives);
+        }
+        private DefaultProfileValues LoadDefaultProfileValues()
+        {
+            string filePath = Path.Combine(AppContext.BaseDirectory, "default_profile_values.json");
+            System.Diagnostics.Debug.WriteLine("filePath " + filePath);
+            if (!System.IO.File.Exists(filePath))
+                throw new FileNotFoundException("default_profile_values.json file not found.");
+
+            var jsonData = System.IO.File.ReadAllText(filePath);
+            return JsonSerializer.Deserialize<DefaultProfileValues>(jsonData)
+                ?? throw new InvalidOperationException("Failed to deserialize default profile values.");
         }
 
         #region Token Validation
@@ -99,18 +133,49 @@ namespace Account.API.Controllers
             if (string.IsNullOrEmpty(userId))
                 return BadRequest("User ID is required.");
 
-            var profile = await _accountService.GetOrCreateProfileAsync(userId);
-
+            var profile = await _accountService.GetProfileAsync(userId);
             if (profile == null)
-                return NotFound("Failed to retrieve or create profile.");
+            {
+                var uniqueUsername = GenerateUniqueUsername();
+                profile = new ProfileModel
+                {
+                    Profile = new ProfileData
+                    {
+                        UserId = userId,
+                        Username = uniqueUsername,
+                        Currency = _defaultProfileValues.Currency,
+                        PremiumCurrency = _defaultProfileValues.PremiumCurrency,
+                        RemainingUsernameChanges = _defaultProfileValues.RemainingUsernameChanges
+                    }
+                };
+                await _accountService.InsertProfileAsync(profile);
+            }
 
             return Ok(profile);
+        }
+
+        private string GenerateUniqueUsername()
+        {
+            const int maxRetries = 10000;
+            for (int i = 0; i < maxRetries; i++)
+            {
+                string prefix = _prefixes[_random.Next(_prefixes.Length)];
+                string adjective = _adjectives[_random.Next(_adjectives.Length)];
+                string username = $"{prefix}{adjective}{_random.Next(10, 100)}";
+
+                if (!_accountService.IsUsernameInUse(username).Result)
+                {
+                    return username;
+                }
+            }
+
+            throw new Exception("Unable to generate a unique username after multiple attempts.");
         }
 
         /// <summary>
         /// Set a username for a profile, if not already set.
         /// </summary>
-        [HttpPatch("SetUsername")]
+        [HttpPut("SetUsername")]
         public async Task<IActionResult> SetUsername([FromBody] SetUsernameRequest request)
         {
             var profile = await _accountService.GetProfileAsync(request.UserId);
@@ -131,7 +196,7 @@ namespace Account.API.Controllers
         /// <summary>
         /// Update the profile picture for a user.
         /// </summary>
-        [HttpPatch("SetProfilePicture")]
+        [HttpPut("SetProfilePicture")]
         public async Task<IActionResult> SetProfilePicture([FromBody] SetProfilePictureRequest request)
         {
             if (string.IsNullOrEmpty(request.UserId))
@@ -144,7 +209,7 @@ namespace Account.API.Controllers
         /// <summary>
         /// Update the banner picture for a user.
         /// </summary>
-        [HttpPatch("SetBannerPicture")]
+        [HttpPut("SetBannerPicture")]
         public async Task<IActionResult> SetBannerPicture([FromBody] SetBannerPictureRequest request)
         {
             if (string.IsNullOrEmpty(request.UserId))
@@ -161,7 +226,7 @@ namespace Account.API.Controllers
         /// <summary>
         /// Add currency (regular or premium) to the user's profile.
         /// </summary>
-        [HttpPatch("AddCurrency")]
+        [HttpPut("AddCurrency")]
         public async Task<IActionResult> AddCurrency([FromBody] AddCurrencyRequest request)
         {
             if (string.IsNullOrEmpty(request.UserId))
@@ -174,7 +239,7 @@ namespace Account.API.Controllers
         /// <summary>
         /// Consume currency (regular or premium) from the user's profile.
         /// </summary>
-        [HttpPatch("ConsumeCurrency")]
+        [HttpPut("ConsumeCurrency")]
         public async Task<IActionResult> ConsumeCurrency([FromBody] ConsumeCurrencyRequest request)
         {
             if (string.IsNullOrEmpty(request.UserId))

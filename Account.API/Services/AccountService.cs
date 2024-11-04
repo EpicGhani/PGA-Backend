@@ -2,63 +2,19 @@
 using MongoDB.Driver;
 using Account.API.Models.Profile;
 using Account.API.Models.Profile.Utils;
-using System.Text.Json;
 
 namespace Account.API.Services
 {
     public class AccountService
     {
         private readonly IMongoCollection<ProfileModel> _profiles;
-        private string[] prefixes = new string[0];
-        private string[] adjectives = new string[0];
-        private Random random;
+
 
         public AccountService(IOptions<ProfileDatabaseSettings> profileDatabaseSettings)
         {
             var mongoClient = new MongoClient(profileDatabaseSettings.Value.ConnectionString);
             var mongoDatabase = mongoClient.GetDatabase(profileDatabaseSettings.Value.DatabaseName);
             _profiles = mongoDatabase.GetCollection<ProfileModel>(profileDatabaseSettings.Value.ProfileCollectionName);
-
-            // Initialize the random generator and load username data
-            random = new Random();
-            LoadUsernameData();
-        }
-
-        /// <summary>
-        /// Loads the prefixes and adjectives from the JSON file for username generation.
-        /// </summary>
-
-        private void LoadUsernameData()
-        {
-            string filePath = Path.Combine(AppContext.BaseDirectory, "username_prefixes.json.json");
-            System.Diagnostics.Debug.WriteLine("Looking for JSON file at path: " + filePath);
-
-            if (File.Exists(filePath))
-            {
-                var jsonData = File.ReadAllText(filePath);
-
-                // Deserialize using System.Text.Json
-                var data = JsonSerializer.Deserialize<PrefixesAndAdjectivesData>(jsonData);
-
-                if (data != null)
-                {
-                    prefixes = data.Prefixes;
-                    adjectives = data.Adjectives;
-
-                    // Log loaded data to verify correctness
-                    Console.WriteLine("Loaded prefixes: " + string.Join(", ", prefixes));
-                    Console.WriteLine("Loaded adjectives: " + string.Join(", ", adjectives));
-                }
-            
-                else
-                {
-                    throw new InvalidOperationException("Failed to deserialize username data.");
-                }
-            }
-            else
-            {
-                throw new FileNotFoundException("username_prefixes.json file not found.");
-            }
         }
 
         #region Profile Services
@@ -72,90 +28,8 @@ namespace Account.API.Services
             return await _profiles.Find(filter).FirstOrDefaultAsync();
         }
 
-        public async Task<ProfileModel?> GetProfileByIDAsync(string id) =>
-            await _profiles.Find(i => i.id == id).FirstOrDefaultAsync();
-
-        #endregion
-
-        #region Create and Update Profile
-
-        /// <summary>
-        /// Retrieves an existing profile or creates a new one with default data.
-        /// </summary>
-        public async Task<ProfileModel> GetOrCreateProfileAsync(string userId)
-        {
-            var filter = Builders<ProfileModel>.Filter.Eq(i => i.Profile.UserId, userId);
-            var profile = await _profiles.Find(filter).FirstOrDefaultAsync();
-
-            if (profile == null)
-            {
-                // Generate a unique username
-                string uniqueUsername = await GenerateUniqueUsername();
-
-                // Define default data for the new profile
-                profile = new ProfileModel
-                {
-                    Profile = new ProfileData
-                    {
-                        UserId = userId,
-                        Username = uniqueUsername,
-                        Password = string.Empty,
-                        Email = string.Empty,
-                        ProfilePictureId = string.Empty,
-                        BannerPictureId = string.Empty,
-                        Club = string.Empty,
-                        Currency = 400,
-                        PremiumCurrency = 30,
-                        RemainingUsernameChanges = 1,
-                        GooglePlayId = string.Empty,
-                        AppleGameCenterId = string.Empty,
-                        FacebookId = string.Empty
-                    },
-                    ExternalReference = new ExternalReference
-                    {
-                        Inventory = string.Empty,
-                        Progression = string.Empty,
-                        History = string.Empty,
-                        Transaction = string.Empty
-                    }
-                };
-
-                await _profiles.InsertOneAsync(profile);
-            }
-            return profile;
-        }
-
-        public async Task UpdateProfileAsync(string id, ProfileModel updatedProfileModel) =>
-            await _profiles.ReplaceOneAsync(i => i.id == id, updatedProfileModel);
-
-        public async Task<UpdateResult> UpdateProfileFieldAsync(string? id, UpdateDefinition<ProfileModel> updateDefinition)
-        {
-            var filter = Builders<ProfileModel>.Filter.Eq(p => p.id, id);
-            return await _profiles.UpdateOneAsync(filter, updateDefinition);
-        }
-
-        #endregion
-
-        #region Username Generation and Validation
-
-        public async Task<string> GenerateUniqueUsername()
-        {
-            int maxRetries = 10000;
-
-            for (int i = 0; i < maxRetries; i++)
-            {
-                string? prefix = prefixes[random.Next(prefixes.Length)];
-                string? adjective = adjectives[random.Next(adjectives.Length)];
-                string username = $"{prefix}{adjective}{random.Next(10, 100)}";
-
-                if (!await IsUsernameInUse(username))
-                {
-                    return username;
-                }
-            }
-
-            throw new Exception("Unable to generate a unique username after multiple attempts.");
-        }
+        public async Task InsertProfileAsync(ProfileModel profile) =>
+            await _profiles.InsertOneAsync(profile);
 
         public async Task<bool> IsUsernameInUse(string? username)
         {
@@ -226,6 +100,7 @@ namespace Account.API.Services
             var result = await _profiles.UpdateOneAsync(filter, update);
             return result.ModifiedCount > 0;
         }
+
         #endregion
 
         #region Currency Management
