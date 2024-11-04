@@ -1,10 +1,10 @@
-﻿using Account.API.Models;
-using Account.API.Models.Profile;
+﻿using Account.API.Models.Profile;
 using Account.API.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using Account.API.Models.Profile.Utils;
+using System.Text.Json;
 
 namespace Account.API.Controllers
 {
@@ -14,11 +14,42 @@ namespace Account.API.Controllers
     {
         private readonly AccountService _accountService;
         private readonly HttpService _http;
+        private readonly string[] _prefixes;
+        private readonly string[] _adjectives;
+        private readonly Random _random;
+        private readonly DefaultProfileValues _defaultProfileValues;
 
-        public AccountController(AccountService accountService, HttpService httpService) 
-        { 
+        public AccountController(AccountService accountService, HttpService httpService)
+        {
             _accountService = accountService;
             _http = httpService;
+            (_prefixes, _adjectives) = LoadUsernameData();
+            _random = new Random();
+            _defaultProfileValues = LoadDefaultProfileValues();
+        }
+
+        private (string[], string[]) LoadUsernameData()
+        {
+            string filePath = Path.Combine(AppContext.BaseDirectory, "username_prefixes.json");
+
+            if (!System.IO.File.Exists(filePath))
+                throw new FileNotFoundException("username_prefixes.json file not found.");
+
+            var jsonData = System.IO.File.ReadAllText(filePath);
+            var data = JsonSerializer.Deserialize<PrefixesAndAdjectivesData>(jsonData)
+                ?? throw new InvalidOperationException("Failed to deserialize username data.");
+
+            return (data.Prefixes, data.Adjectives);
+        }
+        private DefaultProfileValues LoadDefaultProfileValues()
+        {
+            string filePath = Path.Combine(AppContext.BaseDirectory, "default_profile_values.json");
+            if (!System.IO.File.Exists(filePath))
+                throw new FileNotFoundException("default_profile_values.json file not found.");
+
+            var jsonData = System.IO.File.ReadAllText(filePath);
+            return JsonSerializer.Deserialize<DefaultProfileValues>(jsonData)
+                ?? throw new InvalidOperationException("Failed to deserialize default profile values.");
         }
 
         #region Token Validation
@@ -90,40 +121,132 @@ namespace Account.API.Controllers
         #endregion
 
         #region Profile Accessing Methods
-        [HttpGet("{userId}")]
-        public async Task<ActionResult<ProfileModel>> GetProfile(string userId) 
-        {
-            var data = await _accountService.GetProfileAsync(userId);
-            if(data is null)
-                return NotFound();
 
-            return data;
+        /// <summary>
+        /// Get or create a profile based on user ID.
+        /// </summary>
+        [HttpGet("GetOrCreateMyProfile/{userId}")]
+        public async Task<ActionResult<ProfileModel>> GetOrCreateMyProfileAsync(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return BadRequest("User ID is required.");
+
+            var profile = await _accountService.GetProfileAsync(userId);
+            if (profile == null)
+            {
+                var uniqueUsername = GenerateUniqueUsername();
+                profile = new ProfileModel
+                {
+                    Profile = new ProfileData
+                    {
+                        UserId = userId,
+                        Username = uniqueUsername,
+                        Currency = _defaultProfileValues.Currency,
+                        PremiumCurrency = _defaultProfileValues.PremiumCurrency,
+                        RemainingUsernameChanges = _defaultProfileValues.RemainingUsernameChanges
+                    }
+                };
+                await _accountService.InsertProfileAsync(profile);
+            }
+
+            return Ok(profile);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateProfile(ProfileModel newProfileModel)
+        private string GenerateUniqueUsername()
         {
-            await _accountService.CreateProfileAsync(newProfileModel);
-            return CreatedAtAction(nameof(GetProfile), new { userId = newProfileModel.Profile.UserId }, newProfileModel);
+            const int maxRetries = 10000;
+            for (int i = 0; i < maxRetries; i++)
+            {
+                string prefix = _prefixes[_random.Next(_prefixes.Length)];
+                string adjective = _adjectives[_random.Next(_adjectives.Length)];
+                string username = $"{prefix}{adjective}{_random.Next(10, 100)}";
+
+                if (!_accountService.IsUsernameInUse(username).Result)
+                {
+                    return username;
+                }
+            }
+
+            throw new Exception("Unable to generate a unique username after multiple attempts.");
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ProfileModel>> UpdateProfile(string id, ProfileModel updatedProfileModel)
+        /// <summary>
+        /// Set a username for a profile, if not already set.
+        /// </summary>
+        [HttpPut("SetUsername")]
+        public async Task<IActionResult> SetUsername([FromBody] SetUsernameRequest request)
         {
-            var profile = await _accountService.GetProfileByIDAsync(id);
+            var profile = await _accountService.GetProfileAsync(request.UserId);
+            if (profile == null)
+                return NotFound("Profile not found.");
 
-            if(profile is null)
-                return NotFound();
+            if (await _accountService.IsUsernameInUse(request.Username))
+                return Conflict("Username is already in use.");
 
-            updatedProfileModel.id = profile.id;
-            await _accountService.UpdateProfileAsync(id, updatedProfileModel);
-            var updatedData = await _accountService.GetProfileAsync(updatedProfileModel.Profile.UserId);
+            // Call SetUsernameAsync and capture the response
+            var response = await _accountService.SetUsernameAsync(request.UserId, request.Username);
 
-            if (updatedData is null)
-                return NotFound();
-
-            return updatedData;
+            // Return the SetUsernameResponse object as JSON
+            return Ok(response);
         }
+
+
+        /// <summary>
+        /// Update the profile picture for a user.
+        /// </summary>
+        [HttpPut("SetProfilePicture")]
+        public async Task<IActionResult> SetProfilePicture([FromBody] SetProfilePictureRequest request)
+        {
+            if (string.IsNullOrEmpty(request.UserId))
+                return BadRequest("User ID is required.");
+
+            var success = await _accountService.UpdateProfilePictureAsync(request.UserId, request.ProfilePictureId);
+            return success ? Ok("Profile picture updated successfully.") : BadRequest("Failed to update profile picture.");
+        }
+
+        /// <summary>
+        /// Update the banner picture for a user.
+        /// </summary>
+        [HttpPut("SetBannerPicture")]
+        public async Task<IActionResult> SetBannerPicture([FromBody] SetBannerPictureRequest request)
+        {
+            if (string.IsNullOrEmpty(request.UserId))
+                return BadRequest("User ID is required.");
+
+            var success = await _accountService.UpdateBannerPictureAsync(request.UserId, request.BannerPictureId);
+            return success ? Ok("Banner picture updated successfully.") : BadRequest("Failed to update banner picture.");
+        }
+
+        #endregion
+
+        #region Currency Management
+
+        /// <summary>
+        /// Add currency (regular or premium) to the user's profile.
+        /// </summary>
+        [HttpPut("AddCurrency")]
+        public async Task<IActionResult> AddCurrency([FromBody] AddCurrencyRequest request)
+        {
+            if (string.IsNullOrEmpty(request.UserId))
+                return BadRequest("User ID is required.");
+
+            var success = await _accountService.AddCurrencyAsync(request.UserId, request.Amount, request.IsPremium);
+            return success ? Ok("Currency added successfully.") : BadRequest("Failed to add currency.");
+        }
+
+        /// <summary>
+        /// Consume currency (regular or premium) from the user's profile.
+        /// </summary>
+        [HttpPut("ConsumeCurrency")]
+        public async Task<IActionResult> ConsumeCurrency([FromBody] ConsumeCurrencyRequest request)
+        {
+            if (string.IsNullOrEmpty(request.UserId))
+                return BadRequest("User ID is required.");
+
+            var success = await _accountService.ConsumeCurrencyAsync(request.UserId, request.Amount, request.IsPremium);
+            return success ? Ok("Currency consumed successfully.") : BadRequest("Insufficient currency or failed to consume currency.");
+        }
+
         #endregion
     }
 }
