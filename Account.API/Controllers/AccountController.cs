@@ -5,7 +5,6 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using Account.API.Models.Profile.Utils;
 using System.Text.Json;
-using System.Diagnostics;
 
 namespace Account.API.Controllers
 {
@@ -45,7 +44,6 @@ namespace Account.API.Controllers
         private DefaultProfileValues LoadDefaultProfileValues()
         {
             string filePath = Path.Combine(AppContext.BaseDirectory, "default_profile_values.json");
-            System.Diagnostics.Debug.WriteLine("filePath " + filePath);
             if (!System.IO.File.Exists(filePath))
                 throw new FileNotFoundException("default_profile_values.json file not found.");
 
